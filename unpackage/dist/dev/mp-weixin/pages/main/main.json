@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "百合广场",
+  "usingComponents": {
+    "u-search": "/node-modules/uview-ui/components/u-search/u-search",
+    "u-image": "/node-modules/uview-ui/components/u-image/u-image",
+    "u-icon": "/node-modules/uview-ui/components/u-icon/u-icon"
+  }
+}

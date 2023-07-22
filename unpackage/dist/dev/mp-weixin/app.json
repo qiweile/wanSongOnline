@@ -1,0 +1,46 @@
+{
+  "pages": [
+    "pages/main/main",
+    "pages/login/login",
+    "pages/reg/reg",
+    "pages/pwd/pwd",
+    "pages/pwd/update-password",
+    "pages/user/user",
+    "pages/invite/invite",
+    "pages/invited-user/invited-user",
+    "pages/release/release",
+    "pages/collect/collect"
+  ],
+  "subPackages": [],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarBackgroundColor": "#fbf9fe",
+    "backgroundColor": "#fe3ea5"
+  },
+  "tabBar": {
+    "color": "#7a7e83",
+    "selectedColor": "#fe3ea5",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/main/main",
+        "text": "发现",
+        "iconPath": "static/img/home.png",
+        "selectedIconPath": "static/img/homeHL.png"
+      },
+      {
+        "pagePath": "pages/release/release",
+        "text": "发布",
+        "iconPath": "static/img/release.png",
+        "selectedIconPath": "static/img/releaseHL.png"
+      },
+      {
+        "pagePath": "pages/user/user",
+        "text": "我的",
+        "iconPath": "static/img/user.png",
+        "selectedIconPath": "static/img/userHL.png"
+      }
+    ]
+  },
+  "usingComponents": {}
+}

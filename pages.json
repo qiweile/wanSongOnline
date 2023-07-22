@@ -1,0 +1,111 @@
+{
+    "easycom": {
+		"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
+	},
+	"pages": [ //pages数组中第一项表示应用启动页,
+		{
+			"path": "pages/main/main",
+			"style": {
+				"navigationBarTitleText": "百合广场"
+			}
+		}, {
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "登录"
+			}
+		}, {
+			"path": "pages/reg/reg",
+			"style": {
+				"navigationBarTitleText": "注册"
+			}
+		}, {
+			"path": "pages/pwd/pwd",
+			"style": {
+				"navigationBarTitleText": "找回密码"
+			}
+		}, {
+			"path": "pages/pwd/update-password",
+			"style": {
+				"navigationBarTitleText": "修改密码"
+			}
+		}, {
+			"path": "pages/user/user",
+			"style": {
+				"navigationBarTitleText": "我的",
+				"enablePullDownRefresh": false,
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/invite/invite",
+			"style": {
+				"navigationBarTitleText": "邀请好友"
+			}
+		}
+		// #ifdef APP-PLUS
+		, {
+			"path": "pages/invite/invite",
+			"style": {
+				"navigationBarTitleText": "邀请好友"
+			}
+		}
+		// #endif
+		, {
+			"path": "pages/invited-user/invited-user",
+			"style": {
+				"navigationBarTitleText": "受邀用户"
+			}
+		}
+		// #ifdef H5
+		, {
+			"path": "pages/invite-reg/invite-reg",
+			"style": {
+				"navigationBarTitleText": "邀请注册页面",
+				"navigationStyle": "custom"
+			}
+		}
+		// #endif
+	    ,{
+            "path" : "pages/release/release",
+            "style" :
+            {
+                "navigationBarTitleText": "发布",
+                "enablePullDownRefresh": false
+            }
+
+        }
+        ,{
+            "path" : "pages/collect/collect",
+            "style" : {
+                "navigationBarTitleText": "我的收藏",
+                "enablePullDownRefresh": false
+            }
+
+        }
+    ],
+	"tabBar": {
+		"color": "#7a7e83",
+		"selectedColor": "#fe3ea5",
+		"backgroundColor": "#ffffff",
+		"list": [{
+			"pagePath": "pages/main/main",
+			"text": "发现",
+			"iconPath": "static/img/home.png",
+			"selectedIconPath": "static/img/homeHL.png"
+		},{
+			"pagePath": "pages/release/release",
+			"text": "发布",
+			"iconPath": "static/img/release.png",
+			"selectedIconPath": "static/img/releaseHL.png"
+		}, {
+			"pagePath": "pages/user/user",
+			"text": "我的",
+			"iconPath": "static/img/user.png",
+			"selectedIconPath": "static/img/userHL.png"
+		}]
+	},
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarBackgroundColor": "#fbf9fe",
+		"backgroundColor": "#fe3ea5"
+	}
+}
