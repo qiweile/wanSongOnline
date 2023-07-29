@@ -95,7 +95,6 @@ exports.main = async (event, context) => {
 
 			if (!needCaptcha || passed) {
 				res = await uniIDIns.login(params);
-				console.log(res,'HHH')
 				await loginLog(res);
 				needCaptcha = await getNeedCaptcha();
 				
@@ -109,6 +108,13 @@ exports.main = async (event, context) => {
 			break;
 		case 'checkToken':
 			res = await uniIDIns.checkToken(event.uniIdToken);
+
+			// 主动刷新 token
+			// payload = await uniIDIns.refreshToken({
+			// 	token: event.uniIdToken
+			// });
+			// console.log(payload,'aaaaaa')
+			
 			break;
 		case 'logout':
 			res = await uniIDIns.logout(event.uniIdToken)

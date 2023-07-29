@@ -1,21 +1,39 @@
 <template>
     <view class="user">
         <view class="bg-title">个人中心</view>
-        <view class="bg-main u-p-l-20 u-p-r-20">
-            <view class="u-flex" @click="profile">
-                <view class="u-flex u-flex-col u-m-r-20" @click="toEdit">
-                    <u--image :showLoading="true" :src="avatar" width="80px" height="80px" shape="circle"></u--image>
-                    <view class="u-font-12 u-p-t-10">编辑资料</view>
-                </view>
-                <view class="u-flex-1" @click="login">
-                    <view class="u-font-18 u-p-b-20">Hi，{{ hasLogin ? userName : '您未登录' }}</view>
-                    <view class="u-flex u-col-center u-m-b-30">
-                        去认证，解锁平台全部功能
-                        <u-icon size="14" color="#FFF" name="arrow-right"></u-icon>
+        <view class="bg-main">
+            <view class="u-flex user-box u-p-l-30 u-p-r-20 u-p-t-30 u-p-b-30">
+                <view class="u-flex" @click="profile">
+                    <!-- <view class="wrap">
+                        <view class="u-avatar-wrap">
+                            <image class="u-avatar-demo" :src="avatar" mode="aspectFill"></image>
+                        </view>
+                        <u-button @tap="chooseAvatar">进入裁剪页</u-button>
+                    </view> -->
+                    <view class="u-m-r-20 ">
+                        <view class="main-flex avatar">
+                            <u-avatar :src="pic" size="70"></u-avatar>
+                        </view>
+
                     </view>
+                    <view class="u-flex-1" @click="login">
+                        <view  class="u-font-18 u-p-b-20">Hi，{{hasLogin ? userName : '您未登录'}}</view>
+                        <!-- <view class="u-font-12 tip" style="width: 252rpx;">
+                            去认证，解锁平台全部功能
+                            <u-icon class="tip" size="14" name="arrow-right" />
+                        </view> -->
+                    </view>
+                    <!-- <view class="u-flex-1">
+                        <view class="u-font-18 u-p-b-20">
+                            <view class="main-flex main-color main-bg-color qiandao">
+                                获得红线
+                            </view>
+                        </view>
+                    </view> -->
                 </view>
             </view>
-            <view class="center-nav u-m-t-40">
+            <view class="u-font-12 tip update">编辑资料</view>
+            <view class="center-nav">
                 <u-row>
                     <u-col span="2.2" text-align="center" v-for="(item, index) in navList1" :key="index">
                         <view>
@@ -25,6 +43,44 @@
                     </u-col>
                 </u-row>
             </view>
+            <!-- <view class="vip">
+                <view>
+                    365会员
+                    <view class="item-line"></view>
+                    拥有专属权益
+                </view>
+                <view>
+                    <view class="main-flex main-color main-bg-color qiandao">
+                        了解详情
+                    </view>
+                </view>
+            </view> -->
+        </view>
+       <view class="navgraw">
+             <!-- <view class="item-bottom"
+                style="display: flex;align-items: center;padding-bottom: 20rpx;justify-content: space-between;">
+                <view class="main-flex">
+                    <u-image width="40rpx" height="40rpx" :src="ic_shiming" class="ic-img"></u-image>
+                    <text class="u-p-l-20">认证</text>
+                </view>
+                <view class="main-flex section-right">
+                    赠红线 <u-icon name="arrow-right" />
+                </view>
+            </view>
+            <view class="center-nav">
+                <u-row>
+                    <u-col span="2.4" v-for="(item, index) in navList2" :key="index">
+                        <view style="display: flex;flex-direction: column;justify-content: center;align-items: center;">
+                            <view style="background-color: #d9d9d9;width: 80rpx;height: 80rpx;border-radius: 100%;"
+                                class="main-flex">
+                                <image :src="item.pic" mode="widthFix" style="background-color: #d9d9d9;width: 50rpx;">
+                                </image>
+                            </view>
+                            <view class="tabName item-desc">{{ item.name }}</view>
+                        </view>
+                    </u-col>
+                </u-row>
+            </view> -->
         </view>
         <view class="navCell">
             <view class="section">
@@ -54,6 +110,7 @@
                     <u-icon name="arrow-right"></u-icon>
                 </view>
             </view>
+
             <view class="section">
                 <view class="section-title">
                     <u-image width="46rpx" height="46rpx" :src="ic_shezhi"></u-image>
@@ -64,9 +121,8 @@
                 </view>
             </view>
             <view class="btn-row">
-                <button v-if="hasLogin" class="primary" type="primary" :loading="logoutBtnLoading"
-                    @tap="logOut">退出登录</button>
-            </view>
+				<button v-if="hasLogin" class="primary" type="primary" :loading="logoutBtnLoading" @tap="logOut">退出登录</button>
+			</view>
         </view>
     </view>
 </template>
@@ -75,12 +131,12 @@
 /*
     uni.navigateTo: 保留当前页面，跳转到应用内的某个页面，使用uni.navigateBack可以返回到原页面。
 */
-import { mapState, mapMutations } from 'vuex'
+	import { mapState, mapMutations } from 'vuex'
+    import { univerifyLogin } from '@/common/univerify.js'
 export default {
     data() {
         return {
             // http://pic2.sc.chinaz.com/Files/pic/pic9/202002/hpic2119_s.jpg
-            avatar: 'https://cdn.uviewui.com/uview/album/1.jpg',
             pic: "",
             // show:true,
             ic_shiming:
@@ -133,19 +189,25 @@ export default {
         ...mapState(['hasLogin', 'forcedLogin', 'userName'])
     },
     onLoad() {
-
+        console.log(this.hasLogin,'jjie');
     },
     methods: {
         // 获取的代码==status
         ...mapMutations(['logout']),
-        /**
-         * @todo 头像裁剪
-         */
+        bindLogin() {
+            if (!this.hasLogin) {
+                univerifyLogin().catch(err => {
+                    if (err === false) return;
+                    uni.navigateTo({
+                        url: '../login/login',
+                    });
+                })
+            }
+        },
         /**
          * @todo 登录
          */
         login() {
-            if(this.hasLogin) return
             uni.showModal({
                 title: "去登录",
                 content: "跳转的登录页面，是否继续？",
@@ -193,6 +255,7 @@ export default {
                             showCancel: false
                         })
                     }
+
                 },
                 fail: (e) => {
                     uni.showModal({
@@ -203,14 +266,6 @@ export default {
                 complete: () => {
                     this.logoutBtnLoading = false
                 }
-            })
-        },
-        /**
-         * @todo 编辑资料
-         */
-        toEdit() {
-            uni.switchTab({
-                url: '../release/release'
             })
         },
         // 邀请好友
@@ -270,52 +325,108 @@ export default {
 <style lang="scss">
 .user {
     width: 100%;
+}
 
-    .bg-title {
-        background-color: #fe3ea5;
-        text-align: center;
-        color: #ffffff;
-        font-size: 15px;
-        height: 40px;
-        line-height: 40px;
-        font-weight: bold;
-    }
+.bg-title {
+    background-color: #fe3ea5;
+    text-align: center;
+    color: #ffffff;
+    font-size: 15px;
+    height: 40px;
+    line-height: 40px;
+    font-weight: bold;
+}
 
-    .bg-main {
-        background-color: #fe3ea5;
-        background: linear-gradient(to bottom, #fe3ea5, #ee7e59);
-        height: 350rpx;
-        color: #ffffff;
-        border-radius: 0 0 30px 30px;
+.bg-main {
+    background-color: #fe3ea5;
+    background: linear-gradient(to bottom, #fe3ea5, #ee7e59);
+    height: 450rpx;
+    color: #ffffff;
+    border-radius: 0 0 30px 30px;
 
-    }
-
-    .navCell {
+    .avatar {
+        width: 148rpx;
+        height: 148rpx;
         background-color: #ffffff;
-        border-radius: 10px;
-        margin: 0rpx 30rpx 30rpx 30rpx;
-        padding: 0 30rpx 0 30rpx;
+        border-radius: 100%;
+    }
 
-        .section {
-            padding-top: 20rpx;
-            border-bottom: 1px solid #ecf1fa;
-            padding-bottom: 20rpx;
-            display: flex;
-            justify-content: space-between;
+    .qiandao {
+        width: 200rpx;
+        border-radius: 30%;
+        font-size: 14px;
+        margin-left: 10rpx;
+        padding: 5rpx 0;
+    }
 
-            .section-title {
-                font-size: 32rpx;
-                color: #303133;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
+    .main-color {
+        color: #fe3ea5;
+    }
 
-            .section-right {
-                font-size: 28rpx;
-                color: #909399;
-            }
-        }
+    .main-bg-color {
+        background-color: #f3f4f6;
+    }
+
+    .tip {
+        color: #eaeaea;
+    }
+
+    .update {
+        margin-left: 50rpx;
+        margin-top: -20rpx;
+    }
+
+    .center-nav {
+        margin-top: 20rpx;
+        margin-left: 20rpx;
+    }
+
+    .vip {
+        margin: 30rpx;
+        padding: 30rpx;
+        background-color: #344072;
+        border-radius: 20rpx 20rpx 20rpx 20rpx;
+        display: flex;
+        justify-content: space-between;
     }
 }
-</style>
+
+.navgraw {
+    background-color: #ffffff;
+    border-radius: 10px;
+    margin: 20rpx 30rpx 30rpx 30rpx;
+    padding: 20rpx 30rpx 0 20rpx;
+
+    .section-right {
+        font-size: 28rpx;
+        color: #909399;
+    }
+}
+
+.navCell {
+    background-color: #ffffff;
+    border-radius: 10px;
+    margin: -10rpx 30rpx 30rpx 30rpx;
+    padding: 0 30rpx 0 30rpx;
+
+    .section {
+        padding-top: 20rpx;
+        border-bottom: 1px solid #ecf1fa;
+        padding-bottom: 20rpx;
+        display: flex;
+        justify-content: space-between;
+
+        .section-title {
+            font-size: 32rpx;
+            color: #303133;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .section-right {
+            font-size: 28rpx;
+            color: #909399;
+        }
+    }
+}</style>

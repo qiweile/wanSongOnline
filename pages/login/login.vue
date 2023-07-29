@@ -1,10 +1,10 @@
 <template>
 	<view class="content">
-		<view class="login-type">
+		<!-- <view class="login-type">
 			<view v-for="(item,index) in loginTypeList" :key="index" @click="loginType = index" :class="{act: loginType === index}"
 			 class="login-type-btn">{{item}}</view>
-		</view>
-		<view class="input-group" v-if="loginType === 0">
+		</view> -->
+		<!-- <view class="input-group" v-if="loginType === 0">
 			<view class="input-row border">
 				<text class="title">手机：</text>
 				<m-input class="m-input" type="text" clearable focus v-model="mobile" placeholder="请输入手机号码"></m-input>
@@ -14,8 +14,8 @@
 				<m-input type="text" v-model="code" placeholder="请输入验证码"></m-input>
 				<view class="send-code-btn" @click="sendSmsCode">{{codeDuration ? codeDuration + 's' : '发送验证码' }}</view>
 			</view>
-		</view>
-		<view class="input-group" v-else>
+		</view> -->
+		<view class="input-group">
 			<view class="input-row border">
 				<text class="title">账号：</text>
 				<m-input class="m-input" type="text" clearable focus v-model="username" placeholder="请输入账号"></m-input>
@@ -34,7 +34,7 @@
 			</view>
 		</view>
 		<view class="btn-row">
-			<button type="primary" class="primary" :loading="loginBtnLoading" @tap="bindLogin">登录</button>
+			<button type="primary" class="primary" :loading="loginBtnLoading" @tap="loginByPwd">登录</button>
 		</view>
 		<view class="action-row">
 			<navigator url="../reg/reg">注册账号</navigator>
@@ -56,7 +56,7 @@
 </template>
 
 <script>
-	import { mapState, mapMutations } from 'vuex'
+	import { mapState, mapMutations, mapActions } from 'vuex'
 	import mInput from '../../components/m-input.vue'
 	import { univerifyLogin, univerifyErrorHandler } from '@/common/univerify.js'
 	import { getDeviceUUID } from '@/common/utils.js'
@@ -111,6 +111,7 @@
 		},
 		methods: {
 			...mapMutations(['login']),
+            ...mapActions(['myLogin']),
 			initProvider() {
 				const filters = ['weixin', 'qq', 'sinaweibo', 'univerify'];
 				uni.getProvider({
@@ -228,6 +229,7 @@
 					...captchaOptions
 				};
 				this.loginBtnLoading = true
+                // this.myLogin(data)
 				uniCloud.callFunction({
 					name: 'user-center',
 					data: {
@@ -235,27 +237,27 @@
 						params: data
 					},
 					success: (res) => {
-						if (res.result.code == 0) {
+						// if (res.result.code == 0) {
                             console.log(res,'返回数据');
-							this.needCaptcha = false;
-                            uni.setStorageSync('uni_userInfo', res.result.userInfo)
-							uni.setStorageSync('uni-needCaptcha', this.needCaptcha)
-							uni.setStorageSync('uni_id_token', res.result.token)
-							uni.setStorageSync('username', res.result.username)
-							uni.setStorageSync('login_type', 'online')
-							uni.setStorageSync('uni_id_has_pwd', true)
-							this.toMain(this.username);
-						} else {
-							uni.showModal({
-								content: res.result.message,
-								showCancel: false
-							})
-							this.needCaptcha = res.result.needCaptcha;
-							uni.setStorageSync('uni-needCaptcha', this.needCaptcha)
-							if (this.needCaptcha) {
-								this.captcha('createCaptcha')
-							}
-						}
+						// 	this.needCaptcha = false;
+                        //     uni.setStorageSync('uni_userInfo', res.result.userInfo)
+						// 	uni.setStorageSync('uni-needCaptcha', this.needCaptcha)
+						// 	uni.setStorageSync('uni_id_token', res.result.token)
+						// 	uni.setStorageSync('username', res.result.username)
+						// 	uni.setStorageSync('login_type', 'online')
+						// 	uni.setStorageSync('uni_id_has_pwd', true)
+						// 	this.toMain(this.username);
+						// } else {
+						// 	uni.showModal({
+						// 		content: res.result.message,
+						// 		showCancel: false
+						// 	})
+						// 	this.needCaptcha = res.result.needCaptcha;
+						// 	uni.setStorageSync('uni-needCaptcha', this.needCaptcha)
+						// 	if (this.needCaptcha) {
+						// 		this.captcha('createCaptcha')
+						// 	}
+						// }
 					},
 					fail: (e) => {
 						uni.showModal({
@@ -316,6 +318,7 @@
 					}
 				})
 			},
+            // 选择 免密登录 还是 账号密码 登录
 			bindLogin() {
 				switch (this.loginType) {
 					case 0:

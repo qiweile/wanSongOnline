@@ -44,24 +44,25 @@
         </view>
         <view>
             <view v-for="(item, index) in userList" :key="index" class="userPhoto">
-                <u-image width="100%" height="500rpx" src="https://media.citymiai.com/shaoxing/album/gGACd5FpOjwU3vVxkzpnVgOg0qDV9gfr0rzDfIjj.png-normal" mode="aspectFill"></u-image>
+                <u-image width="100%" height="500rpx" :src="item.img"></u-image>
                 <view class="item-title">
-                    编号:{{ item._id }}
-                    <image v-if="item.gender === '女'" :src="label_woman"
-                        class="aaa"></image>
-                    <image v-else-if="item.gender === '男'" :src="label_man" class="aaa"></image>
-                    <image v-if="item.gender ===  '女'" :src="label_shiming"
-                        class="aaa"></image>
+                    编号：{{ item.code }}
+                    <image v-if="item.gender === '女'" :src="label_woman" class="icon"></image>
+                    <image v-else-if="item.gender === '男'" :src="label_man" class="icon"></image>
+                    <image v-if="item.gender === '女'" :src="label_shiming" class="icon"></image>
                 </view>
-                <view class="item-content">{{ '1055926' | date('mm') }}岁
-                    <view class="item-line"></view>{{ item.base_shuxiang }}
-                    <view class="item-line"></view>{{ item.base_shengao }}cm
-                    <view class="item-line"></view>{{ item.work_xueli }}
-                    <view class="item-line"></view>{{ item.work_nianxin }}
+                <view class="item-content">{{ item.birthday }}岁
+                    <view class="item-line"></view>{{ item.animal }}
+                    <view class="item-line"></view>{{ item.height }}cm
+                    <view class="item-line"></view>{{ item.education }}
+                    <view class="item-line"></view>{{ item.income }}
                 </view>
-                <view class="item-desc item-bottom">{{ item.work_danwei }}
-                    <view class="item-line"></view>{{ item.work_hangye }}
-                    <view class="item-line"></view>{{ item.base_hunshi }}
+                <view class="item-desc item-bottom">
+                    {{ item.career }}
+                    <view class="item-line"></view>
+                    {{ item.unit }}
+                    <view class="item-line"></view>
+                    {{ item.marriage }}
                 </view>
             </view>
         </view>
@@ -70,8 +71,7 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import { univerifyLogin } from "@/common/univerify.js";
-
+import { getChineseZodiac, guideToLogin } from "@/common/utils.js";
 export default {
     data() {
         return {
@@ -105,6 +105,11 @@ export default {
                 },
             ],
             flowList: [],
+            marriageMenu: {
+                '0': "未婚",
+                '1': "离异",
+                '2': "丧偶",
+            }
         };
     },
     computed: mapState(["forcedLogin", "hasLogin", "userName"]),
@@ -123,18 +128,12 @@ export default {
                     action: "checkToken",
                 },
                 success: (e) => {
-                    console.log("checkToken success", e);
-
                     if (e.result.code > 0) {
                         //token过期或token不合法，重新登录
                         if (this.forcedLogin) {
-                            uni.reLaunch({
-                                url: "../login/login",
-                            });
+                            uni.reLaunch({ url: "../login/login", });
                         } else {
-                            uni.navigateTo({
-                                url: "../login/login",
-                            });
+                            uni.navigateTo({ url: "../login/login", });
                         }
                     }
                 },
@@ -146,7 +145,7 @@ export default {
                 },
             });
         } else {
-            this.guideToLogin();
+            guideToLogin();
         }
         // =====
         uni.$on('findIndexHouseList', (obj) => {
@@ -167,12 +166,12 @@ export default {
     onReachBottom() {
         this.loadStatus = 'loading';
         // 获取数据
-        this.findHouseList()
+        // this.findHouseList()
     },
     // 下拉刷新
     onPullDownRefresh() {
         // 获取数据
-        this.findHouseList(1);
+        // this.findHouseList(1);
         // 关闭刷新
         uni.stopPullDownRefresh();
     },
@@ -180,42 +179,25 @@ export default {
         ...mapMutations(["login"]),
         // 获取用户信息
         getUser() {
-            uniCloud.callFunction({ name: 'getUser' }).then(res => {
-                let {code,data,msg} = res.result
-                if(code === 200 ) {
-                    this.userList = data.data
-                    console.log(data.data,'BB');
+            uniCloud.callFunction({
+                name: 'getUser', data: {
+                    action: 'getRelUsers'
+                }
+            }).then(res => {
+                let { code, data, msg } = res.result
+                if (code === 200) {
+                    this.userList = data.map(item => ({
+                        ...item,
+                        code: item._id.substring(0, 6),
+                        gender: item.gender,
+                        height: item.height,
+                        birthday: Number(uni.$u.timeFormat(new Date(), 'yyyy')) - Number(uni.$u.timeFormat(new Date(item.birthday), 'yyyy')),
+                        img: item.file_list.length ? item.file_list[0].url : '',
+                        animal: getChineseZodiac(uni.$u.timeFormat(new Date(item.birthday), 'yyyy')),
+                        marriage: this.marriageMenu[item.marriage]
+                    }))
                 }
             })
-        },
-        guideToLogin() {
-            uni.showModal({
-                title: "未登录",
-                content: "您未登录，需要登录后才能继续",
-                /**
-                 * 如果需要强制登录，不显示取消按钮
-                 */
-                showCancel: !this.forcedLogin,
-                success: (res) => {
-                    if (res.confirm) {
-                        univerifyLogin().catch((err) => {
-                            if (err === false) return;
-                            /**
-                             * 如果需要强制登录，使用reLaunch方式
-                             */
-                            if (this.forcedLogin) {
-                                uni.reLaunch({
-                                    url: "../login/login",
-                                });
-                            } else {
-                                uni.navigateTo({
-                                    url: "../login/login",
-                                });
-                            }
-                        });
-                    }
-                },
-            });
         },
         // ========================
         findHouseList(type = 0) {
@@ -742,11 +724,10 @@ export default {
 
     .item-title {
         display: flex;
-        .aaa {
+
+        .icon {
             width: 30rpx;
             height: 30rpx;
-            color: red;
-            // display: inline-block;
             margin-left: 15rpx;
             line-height: 30rpx;
         }

@@ -61,10 +61,10 @@
 					});
 					return;
 				}
-
 				const data = {
 					username: this.username,
-					password: this.password
+					password: this.password,
+                    isRel: false
 				}
 				uniCloud.callFunction({
 					name: 'user-center',
